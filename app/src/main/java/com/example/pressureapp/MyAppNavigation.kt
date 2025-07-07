@@ -6,24 +6,46 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 
 object Routes {
+    const val SPLASH = "splash"
     const val LOGIN = "login"
     const val REGISTER = "register"
     const val DOCTOR_HOME = "doctor_home"
     const val PACIENTE_HOME = "paciente_home"
+    const val PACIENTE_EXTRA_DATA = "paciente_extra_data"
 }
 
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = Routes.LOGIN) {
+    NavHost(navController = navController, startDestination = Routes.SPLASH) {
+        composable(Routes.SPLASH) {
+            SplashScreen(onRoleDetected = { role ->
+                when (role) {
+                    "Doctor" -> navController.navigate(Routes.DOCTOR_HOME) {
+                        popUpTo(Routes.SPLASH) { inclusive = true }
+                    }
+                    "Paciente" -> navController.navigate(Routes.PACIENTE_HOME) {
+                        popUpTo(Routes.SPLASH) { inclusive = true }
+                    }
+                    else -> navController.navigate(Routes.LOGIN) {
+                        popUpTo(Routes.SPLASH) { inclusive = true }
+                    }
+                }
+            })
+        }
+
         composable(Routes.LOGIN) {
             LoginScreen(
                 onLoginSuccess = { _, role ->
                     when (role) {
-                        "doctor" -> navController.navigate(Routes.DOCTOR_HOME)
-                        "paciente" -> navController.navigate(Routes.PACIENTE_HOME)
-                        else -> navController.navigate(Routes.PACIENTE_HOME)
+                        "Doctor" -> navController.navigate(Routes.DOCTOR_HOME) {
+                            popUpTo(Routes.LOGIN) { inclusive = true }
+                        }
+
+                        "Paciente" -> navController.navigate(Routes.PACIENTE_HOME) {
+                            popUpTo(Routes.LOGIN) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToRegister = {
@@ -34,16 +56,36 @@ fun AppNavigation() {
 
         composable(Routes.REGISTER) {
             RegisterScreen(
+                navController = navController,
                 onNavigateBack = { navController.popBackStack() }
             )
         }
 
+        composable("${Routes.PACIENTE_EXTRA_DATA}/{userId}") { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId") ?: ""
+            PacienteExtraDataScreen(userId = userId) {
+                navController.navigate(Routes.PACIENTE_HOME) {
+                    popUpTo(Routes.REGISTER) { inclusive = true }
+                }
+            }
+        }
+
         composable(Routes.DOCTOR_HOME) {
-            HomeDoctorScreen()
+            HomeDoctorScreen(onClickLogout = {
+                navController.navigate(Routes.LOGIN){
+                    popUpTo(0)
+                }
+            })
         }
 
         composable(Routes.PACIENTE_HOME) {
-            HomePacienteScreen()
+            HomePacienteScreen(onClickLogout = {
+                navController.navigate(Routes.LOGIN){
+                    popUpTo(0)
+                }
+            })
         }
     }
 }
+
+

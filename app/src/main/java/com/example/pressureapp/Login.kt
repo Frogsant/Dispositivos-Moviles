@@ -4,18 +4,21 @@ import android.widget.Toast
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.firebase.auth.FirebaseAuth
@@ -24,18 +27,21 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 @Composable
-fun LoginScreen(
-    onLoginSuccess: (FirebaseUser, String) -> Unit,
-    onNavigateToRegister: () -> Unit
-) {
+fun LoginScreen(onLoginSuccess: (FirebaseUser, String) -> Unit, onNavigateToRegister: () -> Unit)
+{
     val context = LocalContext.current
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var emailError by remember { mutableStateOf("")}
+    var passwordError by remember { mutableStateOf("")}
 
     Column(
         modifier = Modifier
-            .padding(16.dp)
-            .fillMaxSize(),
+            .fillMaxSize()
+            .imePadding()
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -47,54 +53,99 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
+        TextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email", color = MaterialTheme.colorScheme.onBackground) },
-            textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground),
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text("Email") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, autoCorrect = false),
+            singleLine = true,
+            maxLines = 1,
+            textStyle = TextStyle(color = MaterialTheme.colorScheme.onPrimary),
             colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                unfocusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
                 unfocusedIndicatorColor = Color.Gray,
-                cursorColor = MaterialTheme.colorScheme.primary
+                cursorColor = MaterialTheme.colorScheme.onPrimary,
+                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                unfocusedTextColor = MaterialTheme.colorScheme.onPrimary
             ),
-            modifier = Modifier.fillMaxWidth()
+            supportingText = {
+                if (emailError.isNotEmpty()){
+                    Text(text = emailError, color = Color.Red)
+                }
+            }
         )
 
-        OutlinedTextField(
+        Spacer(modifier = Modifier.height(2.dp))
+
+        TextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Contraseña", color = MaterialTheme.colorScheme.onBackground) },
-            textStyle = TextStyle(color = MaterialTheme.colorScheme.onBackground),
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text("Contraseña") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, autoCorrect = false),
             visualTransformation = PasswordVisualTransformation(),
+            singleLine = true,
+            maxLines = 1,
+            textStyle = TextStyle(color = MaterialTheme.colorScheme.onPrimary),
             colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                unfocusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
                 unfocusedIndicatorColor = Color.Gray,
-                cursorColor = MaterialTheme.colorScheme.primary
+                cursorColor = MaterialTheme.colorScheme.onPrimary,
+                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                unfocusedTextColor = MaterialTheme.colorScheme.onPrimary
             ),
-            modifier = Modifier.fillMaxWidth()
+            supportingText = {
+                if (passwordError.isNotEmpty()){
+                    Text(text = passwordError, color = Color.Red)
+                }
+            }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = {
-                FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
-                    .addOnSuccessListener {
-                        val user = it.user
-                        Firebase.firestore.collection("users").document(user!!.uid).get()
-                            .addOnSuccessListener { doc ->
-                                val role = doc.getString("role") ?: "paciente"
-                                onLoginSuccess(user, role)
+                val emailValidation = validateEmail(email)
+                val passwordValidation = validatePassword(password)
+
+                val isValidEmail = emailValidation.first
+                val isValidPassword = passwordValidation.first
+
+                emailError = emailValidation.second
+                passwordError = passwordValidation.second
+
+                if (isValidEmail && isValidPassword) {
+                    FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+                        .addOnSuccessListener { authResult ->
+                            val user = authResult.user
+                            if (user != null) {
+                                Firebase.firestore.collection("users").document(user.uid).get()
+                                    .addOnSuccessListener { doc ->
+                                        val role = doc.getString("role") ?: "Paciente"
+                                        onLoginSuccess(user, role)
+                                    }
+                                    .addOnFailureListener { firestoreError ->
+                                        Toast.makeText(context, "Error al obtener el rol: ${firestoreError.message}", Toast.LENGTH_SHORT).show()
+                                    }
+                            } else {
+                                Toast.makeText(context, "Error: Usuario no encontrado", Toast.LENGTH_SHORT).show()
                             }
-                    }.addOnFailureListener {
-                        Toast.makeText(context, "Error: ${it.message}", Toast.LENGTH_SHORT).show()
-                    }
+                        }
+                        .addOnFailureListener { authError ->
+                            Toast.makeText(context, "Error de autenticación: ${authError.message}", Toast.LENGTH_SHORT).show()
+                        }
+                }
             },
+            modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
             ),
-            modifier = Modifier.fillMaxWidth()
         ) {
             Text("Entrar")
         }
