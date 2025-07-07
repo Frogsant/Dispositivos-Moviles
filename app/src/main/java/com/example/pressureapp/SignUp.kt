@@ -203,7 +203,13 @@ fun RegisterScreen(navController: NavController, onNavigateBack: () -> Unit)
                     FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
                         .addOnSuccessListener { authResult ->
                             val user = authResult.user!!
-                            Firebase.firestore.collection("users").document(user.uid)
+                            val roleCollection = when (selectedRole) {
+                                "Paciente" -> "pacientes"
+                                "Doctor" -> "doctores"
+                                else -> "otros"
+                            }
+                            Firebase.firestore.collection(roleCollection)
+                                .document(user.uid)
                                 .set(
                                     mapOf(
                                         "email" to email,

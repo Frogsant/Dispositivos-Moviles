@@ -21,9 +21,12 @@ fun HomeDoctorScreen(onClickLogout: () -> Unit = {}) {
 
     LaunchedEffect(user) {
         user?.let {
-            Firebase.firestore.collection("users").document(it.uid).get()
+            Firebase.firestore.collection("doctores").document(it.uid).get()
                 .addOnSuccessListener { document ->
                     username = document.getString("username") ?: "Sin nombre"
+                }
+                .addOnFailureListener {
+                    username = "Error al obtener nombre"
                 }
         }
     }

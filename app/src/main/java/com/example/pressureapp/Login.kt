@@ -124,13 +124,41 @@ fun LoginScreen(onLoginSuccess: (FirebaseUser, String) -> Unit, onNavigateToRegi
                         .addOnSuccessListener { authResult ->
                             val user = authResult.user
                             if (user != null) {
-                                Firebase.firestore.collection("users").document(user.uid).get()
-                                    .addOnSuccessListener { doc ->
-                                        val role = doc.getString("role") ?: "Paciente"
-                                        onLoginSuccess(user, role)
+                                val firestore = Firebase.firestore
+                                val userId = user.uid
+
+                                firestore.collection("pacientes").document(userId).get()
+                                    .addOnSuccessListener { pacienteDoc ->
+                                        if (pacienteDoc.exists()) {
+                                            onLoginSuccess(user, "Paciente")
+                                        } else {
+                                            firestore.collection("doctores").document(userId).get()
+                                                .addOnSuccessListener { doctorDoc ->
+                                                    if (doctorDoc.exists()) {
+                                                        onLoginSuccess(user, "Doctor")
+                                                    } else {
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Error: Rol no encontrado",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                    }
+                                                }
+                                                .addOnFailureListener { firestoreError ->
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Error al obtener datos: ${firestoreError.message}",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                        }
                                     }
                                     .addOnFailureListener { firestoreError ->
-                                        Toast.makeText(context, "Error al obtener el rol: ${firestoreError.message}", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(
+                                            context,
+                                            "Error al obtener el rol: ${firestoreError.message}",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     }
                             } else {
                                 Toast.makeText(context, "Error: Usuario no encontrado", Toast.LENGTH_SHORT).show()
@@ -145,7 +173,7 @@ fun LoginScreen(onLoginSuccess: (FirebaseUser, String) -> Unit, onNavigateToRegi
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
-            ),
+            )
         ) {
             Text("Entrar")
         }

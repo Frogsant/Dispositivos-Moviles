@@ -100,7 +100,9 @@ fun PacienteExtraDataScreen(userId: String, onRegisterComplete: () -> Unit)
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(onClick = {
-            Firebase.firestore.collection("users").document(userId)
+            val firestore = Firebase.firestore
+
+            firestore.collection("pacientes").document(userId)
                 .update(
                     mapOf(
                         "edad" to edad,

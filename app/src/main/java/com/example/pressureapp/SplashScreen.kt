@@ -7,8 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -21,10 +19,26 @@ fun SplashScreen(onRoleDetected: (String) -> Unit) {
         val currentUser = auth.currentUser
 
         if (currentUser != null) {
-            Firebase.firestore.collection("users").document(currentUser.uid).get()
-                .addOnSuccessListener { document ->
-                    val role = document.getString("role") ?: ""
-                    onRoleDetected(role)
+            val userId = currentUser.uid
+            val firestore = Firebase.firestore
+
+            firestore.collection("pacientes").document(userId).get()
+                .addOnSuccessListener { pacienteDoc ->
+                    if (pacienteDoc.exists()) {
+                        onRoleDetected("Paciente")
+                    } else {
+                        firestore.collection("doctores").document(userId).get()
+                            .addOnSuccessListener { doctorDoc ->
+                                if (doctorDoc.exists()) {
+                                    onRoleDetected("Doctor")
+                                } else {
+                                    onRoleDetected("")
+                                }
+                            }
+                            .addOnFailureListener {
+                                onRoleDetected("")
+                            }
+                    }
                 }
                 .addOnFailureListener {
                     onRoleDetected("")
