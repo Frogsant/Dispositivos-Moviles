@@ -69,7 +69,7 @@ fun RegisterScreen(navController: NavController, onNavigateBack: () -> Unit)
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.onBackground, shape = RoundedCornerShape(12.dp))
+                .background(Color.LightGray, shape = RoundedCornerShape(12.dp))
                 .border(width = 1.dp, Color.LightGray, shape = RoundedCornerShape(12.dp))
                 .padding(12.dp)
         ){

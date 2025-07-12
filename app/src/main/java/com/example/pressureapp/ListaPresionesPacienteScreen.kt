@@ -24,13 +24,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 @Composable
-fun ListaPresionesPacienteScreen(
-    onRegistroClick: (String) -> Unit,
-    navController: NavController
-) {
+fun ListaPresionesPacienteScreen(onRegistroClick: (String) -> Unit, navController: NavController)
+{
     val user = Firebase.auth.currentUser
     val registros = remember { mutableStateListOf<Pair<String, Map<String, Any>>>() }
 
@@ -42,9 +42,23 @@ fun ListaPresionesPacienteScreen(
                 .get()
                 .addOnSuccessListener { result ->
                     registros.clear()
-                    for (doc in result) {
-                        registros.add(doc.id to doc.data)
-                    }
+                    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                    val registrosOrdenados = result.documents
+                        .mapNotNull { doc ->
+                            val fechaStr = doc.getString("fecha")
+                            val fechaDate = try {
+                                dateFormat.parse(fechaStr ?: "")
+                            } catch (e: Exception) {
+                                null
+                            }
+                            if (fechaDate != null) {
+                                Triple(fechaDate, doc.id, doc.data)
+                            } else null
+                        }
+                        .sortedByDescending { it.first }
+                        .map { it.second to it.third!! }
+
+                    registros.addAll(registrosOrdenados)
                 }
         }
     }
@@ -66,7 +80,7 @@ fun ListaPresionesPacienteScreen(
                             strokeWidth = 2.dp.toPx()
                         )
                     }
-                    .background(MaterialTheme.colorScheme.onBackground)
+                    .background(MaterialTheme.colorScheme.secondary)
             ) {
                 Row(
                     modifier = Modifier
@@ -122,7 +136,7 @@ fun ListaPresionesPacienteScreen(
                                     Icon(
                                         imageVector = Icons.Default.CalendarMonth,
                                         contentDescription = "Ícono calendario",
-                                        tint = MaterialTheme.colorScheme.secondary
+                                        tint = MaterialTheme.colorScheme.surface
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(fecha, style = MaterialTheme.typography.bodyLarge)
@@ -135,7 +149,7 @@ fun ListaPresionesPacienteScreen(
                                     Icon(
                                         imageVector = Icons.Default.Favorite,
                                         contentDescription = "Ícono médico",
-                                        tint = MaterialTheme.colorScheme.secondary
+                                        tint = MaterialTheme.colorScheme.surface
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text("Sistólica: $sistolica mmHg",
@@ -148,7 +162,7 @@ fun ListaPresionesPacienteScreen(
                                     Icon(
                                         imageVector = Icons.Default.FavoriteBorder,
                                         contentDescription = "Ícono corazón",
-                                        tint = MaterialTheme.colorScheme.secondary
+                                        tint = MaterialTheme.colorScheme.surface
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text("Diastólica: $diastolica mmHg",

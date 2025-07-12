@@ -60,7 +60,7 @@ fun RegistroIndividualDoctorScreen(
                         strokeWidth = 2.dp.toPx()
                     )
                 }
-                .background(MaterialTheme.colorScheme.onBackground)
+                .background(MaterialTheme.colorScheme.secondary)
         ) {
             Row(
                 modifier = Modifier
@@ -90,43 +90,43 @@ fun RegistroIndividualDoctorScreen(
             ) {
                 Column(modifier = Modifier.padding(16.dp))
                 {
-                    RegistroItem(
+                    RegistroItemDoctor(
                         label = "Fecha",
                         value = data?.get("fecha") as? String ?: "-",
                         icon = Icons.Default.CalendarMonth
                     )
 
-                    RegistroItem(
+                    RegistroItemDoctor(
                         label = "Sistólica",
                         value = "${data?.get("sistolica")} mmHg",
                         icon = Icons.Default.Favorite
                     )
 
-                    RegistroItem(
+                    RegistroItemDoctor(
                         label = "Diastólica",
                         value = "${data?.get("diastolica")} mmHg",
                         icon = Icons.Default.FavoriteBorder
                     )
 
-                    RegistroItem(
+                    RegistroItemDoctor(
                         label = "Comentario del paciente",
                         value = data?.get("comentarioPaciente") as? String ?: "-",
                         icon = Icons.Default.Comment
                     )
 
-                    RegistroItem(
+                    RegistroItemDoctor(
                         label = "Nota médica",
                         value = data?.get("notaMedicaDoctor") as? String ?: "-",
                         icon = Icons.Default.NoteAlt
                     )
 
-                    RegistroItem(
+                    RegistroItemDoctor(
                         label = "Fecha nota médica",
                         value = data?.get("fechaNotaMedica") as? String ?: "-",
                         icon = Icons.Default.CalendarMonth
                     )
 
-                    RegistroItem(
+                    RegistroItemDoctor(
                         label = "Doctor que editó",
                         value = data?.get("doctorQueEditoNota") as? String ?: "-",
                         icon = Icons.Default.Person4
@@ -193,7 +193,7 @@ fun RegistroItemDoctor(label: String, value: String, icon: ImageVector) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.secondary
+                tint = MaterialTheme.colorScheme.surface
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(

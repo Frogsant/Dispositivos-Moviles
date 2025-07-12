@@ -25,17 +25,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 @Composable
-fun ListaPresionesDoctorScreen(
-    pacienteId: String,
-    onRegistroClick: (String) -> Unit,
-    navController: NavController
-) {
+fun ListaPresionesDoctorScreen(pacienteId: String, onRegistroClick: (String) -> Unit, navController: NavController)
+{
     val context = LocalContext.current
     val registros = remember { mutableStateListOf<Pair<String, Map<String, Any>>>() }
+    val dateFormat = remember { SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()) }
 
     LaunchedEffect(pacienteId) {
         Firebase.firestore.collection("pacientes")
@@ -43,10 +42,17 @@ fun ListaPresionesDoctorScreen(
             .collection("presiones")
             .get()
             .addOnSuccessListener { result ->
-                registros.clear()
-                for (doc in result) {
-                    registros.add(doc.id to doc.data)
+                val rawList = result.map { it.id to it.data }
+                val sortedList = rawList.sortedByDescending { pair ->
+                    val dateString = pair.second["fecha"] as? String ?: ""
+                    try {
+                        dateFormat.parse(dateString)
+                    } catch (e: Exception) {
+                        null
+                    }
                 }
+                registros.clear()
+                registros.addAll(sortedList)
             }
             .addOnFailureListener {
                 Toast.makeText(context, "Error al obtener registros", Toast.LENGTH_SHORT).show()
@@ -70,7 +76,7 @@ fun ListaPresionesDoctorScreen(
                             strokeWidth = 2.dp.toPx()
                         )
                     }
-                    .background(MaterialTheme.colorScheme.onBackground)
+                    .background(MaterialTheme.colorScheme.secondary)
             ) {
                 Row(
                     modifier = Modifier
@@ -127,7 +133,7 @@ fun ListaPresionesDoctorScreen(
                                     Icon(
                                         imageVector = Icons.Default.CalendarMonth,
                                         contentDescription = "Ícono calendario",
-                                        tint = MaterialTheme.colorScheme.secondary
+                                        tint = MaterialTheme.colorScheme.surface
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(fecha, style = MaterialTheme.typography.bodyLarge)
@@ -140,7 +146,7 @@ fun ListaPresionesDoctorScreen(
                                     Icon(
                                         imageVector = Icons.Default.Favorite,
                                         contentDescription = "Ícono médico",
-                                        tint = MaterialTheme.colorScheme.secondary
+                                        tint = MaterialTheme.colorScheme.surface
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text("Sistólica: $sistolica mmHg",
@@ -152,7 +158,7 @@ fun ListaPresionesDoctorScreen(
                                     Icon(
                                         imageVector = Icons.Default.FavoriteBorder,
                                         contentDescription = "Ícono corazón",
-                                        tint = MaterialTheme.colorScheme.secondary
+                                        tint = MaterialTheme.colorScheme.surface
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text("Diastólica: $diastolica mmHg",

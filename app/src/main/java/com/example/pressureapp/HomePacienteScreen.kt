@@ -74,7 +74,7 @@ fun HomePacienteScreen(onClickLogout: () -> Unit = {}, onNavigateToListaPresione
                         strokeWidth = 2.dp.toPx()
                     )
                 }
-                .background(MaterialTheme.colorScheme.onBackground)
+                .background(MaterialTheme.colorScheme.secondary)
         ) {
             Row(
                 modifier = Modifier
@@ -92,7 +92,7 @@ fun HomePacienteScreen(onClickLogout: () -> Unit = {}, onNavigateToListaPresione
                     Icon(
                         imageVector = Icons.Default.Person,
                         contentDescription = "Ícono de usuario",
-                        tint = colorScheme.secondary
+                        tint = colorScheme.onPrimary
                     )
 
                     Spacer(modifier = Modifier.width(8.dp))
@@ -115,7 +115,7 @@ fun HomePacienteScreen(onClickLogout: () -> Unit = {}, onNavigateToListaPresione
                     },
                     border = BorderStroke(1.dp, Color.LightGray),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = colorScheme.secondary,
+                        containerColor = colorScheme.surface,
                         contentColor = colorScheme.onPrimary
                     )
                 ) {

@@ -60,7 +60,7 @@ fun RegistroIndividualScreen(registroId: String, navController: NavController) {
                         strokeWidth = 2.dp.toPx()
                     )
                 }
-                .background(MaterialTheme.colorScheme.onBackground)
+                .background(MaterialTheme.colorScheme.secondary)
         ) {
             Row(
                 modifier = Modifier
@@ -181,7 +181,7 @@ fun RegistroItem(label: String, value: String, icon: ImageVector) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.secondary
+                tint = MaterialTheme.colorScheme.surface
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
