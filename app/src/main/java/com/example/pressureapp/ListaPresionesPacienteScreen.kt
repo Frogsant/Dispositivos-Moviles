@@ -11,23 +11,26 @@ import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 
 @Composable
-fun ListaPresionesPacienteScreen(onRegistroClick: (String) -> Unit) {
+fun ListaPresionesPacienteScreen(
+    onRegistroClick: (String) -> Unit,
+    navController: NavController
+) {
     val user = Firebase.auth.currentUser
     val registros = remember { mutableStateListOf<Pair<String, Map<String, Any>>>() }
 
@@ -46,57 +49,54 @@ fun ListaPresionesPacienteScreen(onRegistroClick: (String) -> Unit) {
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize())
-    {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .drawBehind {
-                    drawLine(
-                        color = Color.Gray,
-                        start = Offset(0f, size.height),
-                        end = Offset(size.width, size.height),
-                        strokeWidth = 2.dp.toPx()
-                    )
-                }
-                .background(Color.LightGray)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp,
-                        end = 16.dp,
-                        top = 36.dp,
-                        bottom = 16.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Mis Registros de Presión",
-                    fontSize = 28.sp,
-                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .verticalScroll(rememberScrollState())
         ) {
-            if (registros.isEmpty()) {
-                Spacer(Modifier.height(32.dp))
-                Text("No hay registros aún.", style = MaterialTheme.typography.bodyLarge)
-            } else {
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .drawBehind {
+                        drawLine(
+                            color = Color.LightGray,
+                            start = Offset(0f, size.height),
+                            end = Offset(size.width, size.height),
+                            strokeWidth = 2.dp.toPx()
+                        )
+                    }
+                    .background(MaterialTheme.colorScheme.onBackground)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp, top = 42.dp, bottom = 16.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    items(registros) { (id, data) ->
+                    Text(
+                        text = "Mis Registros de Presión",
+                        fontSize = 28.sp,
+                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (registros.isEmpty()) {
+                    Spacer(modifier = Modifier.height(32.dp))
+                    Text("No hay registros aún.", style = MaterialTheme.typography.bodyLarge)
+                } else {
+                    registros.forEach { (id, data) ->
                         val sistolica = data["sistolica"] as? String ?: "-"
                         val diastolica = data["diastolica"] as? String ?: "-"
                         val fecha = data["fecha"] as? String ?: "-"
@@ -106,7 +106,7 @@ fun ListaPresionesPacienteScreen(onRegistroClick: (String) -> Unit) {
                                 .fillMaxWidth(0.95f)
                                 .padding(vertical = 6.dp)
                                 .clickable { onRegistroClick(id) },
-                            colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceVariant),
+                            colors = CardDefaults.cardColors(Color.LightGray),
                             elevation = CardDefaults.cardElevation(4.dp)
                         ) {
                             Column(
@@ -115,56 +115,64 @@ fun ListaPresionesPacienteScreen(onRegistroClick: (String) -> Unit) {
                                     .fillMaxWidth(),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically
-                                ){
+                                Row(modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Start)
+                                {
                                     Icon(
                                         imageVector = Icons.Default.CalendarMonth,
-                                        contentDescription = "Ícono de calendario",
-                                        tint = MaterialTheme.colorScheme.primary
+                                        contentDescription = "Ícono calendario",
+                                        tint = MaterialTheme.colorScheme.secondary
                                     )
-
                                     Spacer(modifier = Modifier.width(8.dp))
-
-                                    Text("$fecha", style = MaterialTheme.typography.bodyLarge)
+                                    Text(fecha, style = MaterialTheme.typography.bodyLarge)
                                 }
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically
-                                ){
+
+                                Spacer(modifier = Modifier.height(6.dp))
+
+                                Row(verticalAlignment = Alignment.CenterVertically)
+                                {
                                     Icon(
                                         imageVector = Icons.Default.Favorite,
-                                        contentDescription = "Ícono medico",
-                                        tint = MaterialTheme.colorScheme.primary
+                                        contentDescription = "Ícono médico",
+                                        tint = MaterialTheme.colorScheme.secondary
                                     )
-
                                     Spacer(modifier = Modifier.width(8.dp))
-
-                                    Text(
-                                        "Sistólica: $sistolica mmHg",
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
+                                    Text("Sistólica: $sistolica mmHg",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.Bold)
                                 }
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically
-                                ){
+
+                                Row(verticalAlignment = Alignment.CenterVertically)
+                                {
                                     Icon(
                                         imageVector = Icons.Default.FavoriteBorder,
-                                        contentDescription = "Ícono de corazón",
-                                        tint = MaterialTheme.colorScheme.primary
+                                        contentDescription = "Ícono corazón",
+                                        tint = MaterialTheme.colorScheme.secondary
                                     )
-
                                     Spacer(modifier = Modifier.width(8.dp))
-
-                                    Text(
-                                        "Diastólica: $diastolica mmHg",
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
+                                    Text("Diastólica: $diastolica mmHg",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.Bold)
                                 }
                             }
                         }
                     }
                 }
             }
+        }
+
+        Button(
+            onClick = { navController.popBackStack() },
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(16.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
+        ) {
+            Text("Volver")
         }
     }
 }

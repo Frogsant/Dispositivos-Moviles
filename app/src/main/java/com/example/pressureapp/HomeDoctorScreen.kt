@@ -1,6 +1,8 @@
 package com.example.pressureapp
 
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.*
@@ -18,9 +20,19 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 
 @Composable
-fun HomeDoctorScreen(onClickLogout: () -> Unit = {}, onPacienteClick: (String) -> Unit) {
+fun HomeDoctorScreen(onClickLogout: () -> Unit = {}, onPacienteClick: (String) -> Unit)
+{
     val auth = Firebase.auth
     val user = auth.currentUser
     val context = LocalContext.current
@@ -52,64 +64,121 @@ fun HomeDoctorScreen(onClickLogout: () -> Unit = {}, onPacienteClick: (String) -
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("Bienvenido, Doctor", fontSize = 24.sp, modifier = Modifier.padding(top = 16.dp))
-        Text(doctorName, fontSize = 18.sp, color = MaterialTheme.colorScheme.primary)
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Text("Pacientes registrados", style = MaterialTheme.typography.titleMedium)
-        Spacer(modifier = Modifier.height(8.dp))
-
-        if (pacientes.isEmpty()) {
-            Text("No hay pacientes registrados.")
-        } else {
-            LazyColumn(
+    Column(modifier = Modifier.fillMaxSize()){
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .drawBehind {
+                    drawLine(
+                        color = Color.LightGray,
+                        start = Offset(0f, size.height),
+                        end = Offset(size.width, size.height),
+                        strokeWidth = 2.dp.toPx()
+                    )
+                }
+                .background(MaterialTheme.colorScheme.onBackground)
+        ) {
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f),
-                contentPadding = PaddingValues(vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                    .padding(start = 16.dp,
+                        end = 16.dp,
+                        top = 36.dp,
+                        bottom = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                items(pacientes) { (id, data) ->
-                    val nombre = data["username"] as? String ?: "Sin nombre"
-                    val email = data["email"] as? String ?: "Sin correo"
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = "Ícono de usuario",
+                        tint = colorScheme.secondary
+                    )
 
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { onPacienteClick(id) },
-                        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceVariant),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-                    ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Text(text = nombre, style = MaterialTheme.typography.bodyLarge)
-                            Text(text = email, style = MaterialTheme.typography.bodyMedium)
-                        }
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    if (user != null) {
+                        Text(doctorName,
+                            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                            color = colorScheme.onPrimary)
+                    } else {
+                        Text("No hay usuario",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                            color = colorScheme.onPrimary)
                     }
+                }
+
+                Button(
+                    onClick = {
+                        auth.signOut()
+                        onClickLogout()
+                    },
+                    border = BorderStroke(1.dp, Color.LightGray),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorScheme.secondary,
+                        contentColor = colorScheme.onPrimary
+                    )
+                ) {
+                    Text("Cerrar Sesión")
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            onClick = {
-                auth.signOut()
-                onClickLogout()
-            },
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Cerrar Sesión")
+            Text("Pacientes",
+                fontSize = 24.sp,
+                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                color = colorScheme.primary)
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            if (pacientes.isEmpty()) {
+                Text("No hay pacientes registrados.")
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    contentPadding = PaddingValues(vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(pacientes) { (id, data) ->
+                        val nombre = data["username"] as? String ?: "Sin nombre"
+                        val email = data["email"] as? String ?: "Sin correo"
+
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onPacienteClick(id) },
+                            colors = CardDefaults.cardColors(Color.LightGray),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                        ) {
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                Row(verticalAlignment = Alignment.CenterVertically)
+                                {
+                                    Icon(
+                                        imageVector = Icons.Default.Person,
+                                        contentDescription = "Ícono user",
+                                        tint = MaterialTheme.colorScheme.secondary
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(text = nombre,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        fontWeight = FontWeight.Bold)
+                                }
+                                Text(text = email, style = MaterialTheme.typography.bodyMedium)
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

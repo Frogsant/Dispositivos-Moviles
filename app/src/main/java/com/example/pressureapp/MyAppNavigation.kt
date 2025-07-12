@@ -107,13 +107,17 @@ fun AppNavigation() {
             ListaPresionesPacienteScreen(
                 onRegistroClick = { registroId ->
                     navController.navigate("${Routes.REGISTRO_INDIVIDUAL}/$registroId")
-                }
+                } ,
+                navController = navController
             )
         }
 
         composable("${Routes.REGISTRO_INDIVIDUAL}/{registroId}") { backStackEntry ->
             val registroId = backStackEntry.arguments?.getString("registroId") ?: ""
-            RegistroIndividualScreen(registroId = registroId)
+            RegistroIndividualScreen(
+                registroId = registroId,
+                navController = navController
+            )
         }
 
 
@@ -133,7 +137,8 @@ fun AppNavigation() {
                 pacienteId = pacienteId,
                 onRegistroClick = { registroId ->
                     navController.navigate("${Routes.DOCTOR_REGISTRO_INDIVIDUAL}/$pacienteId/$registroId")
-                }
+                },
+                navController = navController
             )
         }
 

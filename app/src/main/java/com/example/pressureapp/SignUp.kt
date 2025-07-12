@@ -1,6 +1,8 @@
 package com.example.pressureapp
 
 import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.*
@@ -13,11 +15,13 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,132 +58,132 @@ fun RegisterScreen(navController: NavController, onNavigateBack: () -> Unit)
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Registrar usuario", fontSize = 24.sp)
+        Text("Registrar usuario",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextField(
-            value = email,
-            onValueChange = { email = it },
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Email") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, autoCorrect = false),
-            singleLine = true,
-            maxLines = 1,
-            textStyle = TextStyle(color = MaterialTheme.colorScheme.onPrimary),
-            colors = TextFieldDefaults.colors(
-                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedIndicatorColor = Color.Gray,
-                cursorColor = MaterialTheme.colorScheme.onPrimary,
-                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedTextColor = MaterialTheme.colorScheme.onPrimary
-            ),
-            supportingText = {
-                if (emailError.isNotEmpty()){
-                    Text(text = emailError, color = Color.Red)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.onBackground, shape = RoundedCornerShape(12.dp))
+                .border(width = 1.dp, Color.LightGray, shape = RoundedCornerShape(12.dp))
+                .padding(12.dp)
+        ){
+            TextField(
+                value = email,
+                onValueChange = { email = it },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text("Email") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, autoCorrect = false),
+                singleLine = true,
+                maxLines = 1,
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.primary),
+                colors = TextFieldDefaults.colors(
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
+                    cursorColor = MaterialTheme.colorScheme.primary,
+                ),
+                supportingText = {
+                    if (emailError.isNotEmpty()){
+                        Text(text = emailError, color = Color.White, fontWeight = FontWeight.Bold)
+                    }
                 }
-            }
-        )
+            )
 
-        Spacer(modifier = Modifier.height(2.dp))
+            Spacer(modifier = Modifier.height(2.dp))
 
-        TextField(
-            value = username,
-            onValueChange = { username = it },
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Nombre de usuario") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            singleLine = true,
-            maxLines = 1,
-            textStyle = TextStyle(color = MaterialTheme.colorScheme.onPrimary),
-            colors = TextFieldDefaults.colors(
-                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedIndicatorColor = Color.Gray,
-                cursorColor = MaterialTheme.colorScheme.onPrimary,
-                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedTextColor = MaterialTheme.colorScheme.onPrimary
-            ),
-            supportingText = {
-                if (usernameError.isNotEmpty()){
-                    Text(text = usernameError, color = Color.Red)
+            TextField(
+                value = username,
+                onValueChange = { username = it },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text("Nombre de usuario") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                singleLine = true,
+                maxLines = 1,
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.primary),
+                colors = TextFieldDefaults.colors(
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
+                    cursorColor = MaterialTheme.colorScheme.primary,
+                ),
+                supportingText = {
+                    if (usernameError.isNotEmpty()){
+                        Text(text = usernameError, color = Color.White, fontWeight = FontWeight.Bold)
+                    }
                 }
-            }
-        )
+            )
 
-        Spacer(modifier = Modifier.height(2.dp))
+            Spacer(modifier = Modifier.height(2.dp))
 
-        TextField(
-            value = password,
-            onValueChange = { password = it },
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Contraseña") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, autoCorrect = false),
-            visualTransformation = PasswordVisualTransformation(),
-            singleLine = true,
-            maxLines = 1,
-            textStyle = TextStyle(color = MaterialTheme.colorScheme.onPrimary),
-            colors = TextFieldDefaults.colors(
-                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedIndicatorColor = Color.Gray,
-                cursorColor = MaterialTheme.colorScheme.onPrimary,
-                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedTextColor = MaterialTheme.colorScheme.onPrimary
-            ),
-            supportingText = {
-                if (passwordError.isNotEmpty()){
-                    Text(text = passwordError, color = Color.Red)
+            TextField(
+                value = password,
+                onValueChange = { password = it },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text("Contraseña") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, autoCorrect = false),
+                visualTransformation = PasswordVisualTransformation(),
+                singleLine = true,
+                maxLines = 1,
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.primary),
+                colors = TextFieldDefaults.colors(
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
+                    cursorColor = MaterialTheme.colorScheme.primary,
+                ),
+                supportingText = {
+                    if (passwordError.isNotEmpty()){
+                        Text(text = passwordError, color = Color.White, fontWeight = FontWeight.Bold)
+                    }
                 }
-            }
-        )
+            )
 
-        Spacer(modifier = Modifier.height(2.dp))
+            Spacer(modifier = Modifier.height(2.dp))
 
-        TextField(
-            value = confirmPassword,
-            onValueChange = { confirmPassword = it },
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Confirmar contraseña") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, autoCorrect = false),
-            visualTransformation = PasswordVisualTransformation(),
-            singleLine = true,
-            maxLines = 1,
-            textStyle = TextStyle(color = MaterialTheme.colorScheme.onPrimary),
-            colors = TextFieldDefaults.colors(
-                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedIndicatorColor = Color.Gray,
-                cursorColor = MaterialTheme.colorScheme.onPrimary,
-                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedTextColor = MaterialTheme.colorScheme.onPrimary
-            ),
-            supportingText = {
-                if (confirmPasswordError.isNotEmpty()){
-                    Text(text = confirmPasswordError, color = Color.Red)
+            TextField(
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text("Confirmar contraseña") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, autoCorrect = false),
+                visualTransformation = PasswordVisualTransformation(),
+                singleLine = true,
+                maxLines = 1,
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.primary),
+                colors = TextFieldDefaults.colors(
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
+                    cursorColor = MaterialTheme.colorScheme.primary,
+                ),
+                supportingText = {
+                    if (confirmPasswordError.isNotEmpty()){
+                        Text(text = confirmPasswordError, color = Color.White, fontWeight = FontWeight.Bold)
+                    }
                 }
-            }
-        )
+            )
 
-        Spacer(modifier = Modifier.height(2.dp))
+            Spacer(modifier = Modifier.height(2.dp))
 
-        RoleDropdown(
-            selectedRole = selectedRole,
-            onRoleSelected = { selectedRole = it },
-            supportingText = {
-                if (roleError.isNotEmpty()){
-                    Text(text = roleError, color = Color.Red)
+            RoleDropdown(
+                selectedRole = selectedRole,
+                onRoleSelected = { selectedRole = it },
+                supportingText = {
+                    if (roleError.isNotEmpty()){
+                        Text(text = roleError, color = Color.White, fontWeight = FontWeight.Bold)
+                    }
                 }
-            }
-        )
+            )
 
-        if (errorMessage.isNotEmpty()) {
-            Text(errorMessage, color = Color.Red)
+            if (errorMessage.isNotEmpty()) {
+                Text(errorMessage, color = Color.White, fontWeight = FontWeight.Bold)
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -240,7 +244,7 @@ fun RegisterScreen(navController: NavController, onNavigateBack: () -> Unit)
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
+                containerColor = MaterialTheme.colorScheme.surface,
                 contentColor = MaterialTheme.colorScheme.onPrimary
             )
         ) {
@@ -276,15 +280,14 @@ fun RoleDropdown(selectedRole: String, onRoleSelected: (String) -> Unit, support
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
             },
-            textStyle = TextStyle(color = MaterialTheme.colorScheme.onPrimary),
+            textStyle = TextStyle(color = MaterialTheme.colorScheme.primary),
             colors = TextFieldDefaults.colors(
-                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                unfocusedLabelColor = MaterialTheme.colorScheme.primary,
                 focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedIndicatorColor = Color.Gray,
-                cursorColor = MaterialTheme.colorScheme.onPrimary,
-                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedTextColor = MaterialTheme.colorScheme.onPrimary
+                cursorColor = MaterialTheme.colorScheme.primary,
+                focusedTextColor = MaterialTheme.colorScheme.primary,
+                unfocusedTextColor = MaterialTheme.colorScheme.primary
             ),
             modifier = Modifier
                 .menuAnchor()

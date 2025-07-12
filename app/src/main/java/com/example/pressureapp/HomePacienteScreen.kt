@@ -1,6 +1,7 @@
 package com.example.pressureapp
 
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -9,6 +10,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,13 +68,13 @@ fun HomePacienteScreen(onClickLogout: () -> Unit = {}, onNavigateToListaPresione
                 .fillMaxWidth()
                 .drawBehind {
                     drawLine(
-                        color = Color.Gray,
+                        color = Color.LightGray,
                         start = Offset(0f, size.height),
                         end = Offset(size.width, size.height),
                         strokeWidth = 2.dp.toPx()
                     )
                 }
-                .background(Color.LightGray)
+                .background(MaterialTheme.colorScheme.onBackground)
         ) {
             Row(
                 modifier = Modifier
@@ -90,7 +92,7 @@ fun HomePacienteScreen(onClickLogout: () -> Unit = {}, onNavigateToListaPresione
                     Icon(
                         imageVector = Icons.Default.Person,
                         contentDescription = "Ícono de usuario",
-                        tint = MaterialTheme.colorScheme.primary
+                        tint = colorScheme.secondary
                     )
 
                     Spacer(modifier = Modifier.width(8.dp))
@@ -98,11 +100,11 @@ fun HomePacienteScreen(onClickLogout: () -> Unit = {}, onNavigateToListaPresione
                     if (user != null) {
                         Text(username,
                             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                            color = MaterialTheme.colorScheme.primary)
+                            color = colorScheme.onPrimary)
                     } else {
                         Text("No hay usuario",
                             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                            color = MaterialTheme.colorScheme.primary)
+                            color = colorScheme.onPrimary)
                     }
                 }
 
@@ -111,9 +113,10 @@ fun HomePacienteScreen(onClickLogout: () -> Unit = {}, onNavigateToListaPresione
                         auth.signOut()
                         onClickLogout()
                     },
+                    border = BorderStroke(1.dp, Color.LightGray),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
+                        containerColor = colorScheme.secondary,
+                        contentColor = colorScheme.onPrimary
                     )
                 ) {
                     Text("Cerrar Sesión")
@@ -134,7 +137,7 @@ fun HomePacienteScreen(onClickLogout: () -> Unit = {}, onNavigateToListaPresione
             Text("Registra tu presión",
                 fontSize = 24.sp,
                 style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                color = MaterialTheme.colorScheme.primary)
+                color = colorScheme.primary)
 
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -142,10 +145,11 @@ fun HomePacienteScreen(onClickLogout: () -> Unit = {}, onNavigateToListaPresione
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color.LightGray, shape = RoundedCornerShape(12.dp))
-                    .border(width = 1.dp, color = Color.DarkGray, shape = RoundedCornerShape(12.dp))
+                    .border(width = 1.dp, Color.LightGray, shape = RoundedCornerShape(12.dp))
                     .padding(16.dp)
             ){
-                Text("Presión sistólica (máxima):")
+                Text("Presión sistólica (máxima):",
+                    color = colorScheme.primary)
                 TextField(
                     value = sisto,
                     onValueChange = { sisto = it },
@@ -153,21 +157,19 @@ fun HomePacienteScreen(onClickLogout: () -> Unit = {}, onNavigateToListaPresione
                     placeholder = { Text("Ej. 120") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     singleLine = true,
-                    textStyle = TextStyle(color = MaterialTheme.colorScheme.onPrimary),
+                    textStyle = TextStyle(color = colorScheme.primary),
                     colors = TextFieldDefaults.colors(
-                        focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                        unfocusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
-                        unfocusedIndicatorColor = Color.Gray,
-                        cursorColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimary
+                        focusedLabelColor = colorScheme.primary,
+                        unfocusedLabelColor = colorScheme.primary,
+                        focusedIndicatorColor = colorScheme.onPrimary,
+                        cursorColor = colorScheme.primary,
                     ),
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Text("Presión diastólica (mínima):")
+                Text("Presión diastólica (mínima):",
+                    color = colorScheme.primary)
                 TextField(
                     value = diasto,
                     onValueChange = { diasto = it },
@@ -175,21 +177,19 @@ fun HomePacienteScreen(onClickLogout: () -> Unit = {}, onNavigateToListaPresione
                     placeholder = { Text("Ej. 80") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     singleLine = true,
-                    textStyle = TextStyle(color = MaterialTheme.colorScheme.onPrimary),
+                    textStyle = TextStyle(color = colorScheme.primary),
                     colors = TextFieldDefaults.colors(
-                        focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                        unfocusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
-                        unfocusedIndicatorColor = Color.Gray,
-                        cursorColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimary
+                        focusedLabelColor = colorScheme.primary,
+                        unfocusedLabelColor = colorScheme.primary,
+                        focusedIndicatorColor = colorScheme.onPrimary,
+                        cursorColor = colorScheme.primary,
                     ),
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Text("Comentario:")
+                Text("Comentario:",
+                    color = colorScheme.primary)
                 TextField(
                     value = comen,
                     onValueChange = { comen = it },
@@ -197,24 +197,22 @@ fun HomePacienteScreen(onClickLogout: () -> Unit = {}, onNavigateToListaPresione
                     placeholder = { Text("Agregar comentario") },
                     keyboardOptions = KeyboardOptions.Default,
                     maxLines = 3,
-                    textStyle = TextStyle(color = MaterialTheme.colorScheme.onPrimary),
+                    textStyle = TextStyle(color = colorScheme.primary),
                     colors = TextFieldDefaults.colors(
-                        focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                        unfocusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
-                        unfocusedIndicatorColor = Color.Gray,
-                        cursorColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onPrimary
+                        focusedLabelColor = colorScheme.primary,
+                        unfocusedLabelColor = colorScheme.primary,
+                        focusedIndicatorColor = colorScheme.onPrimary,
+                        cursorColor = colorScheme.primary,
                     ),
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text("Fecha de captura: $selectedDate",
+                    modifier = Modifier.fillMaxWidth(),
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth())
+                    color = colorScheme.primary)
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -252,7 +250,11 @@ fun HomePacienteScreen(onClickLogout: () -> Unit = {}, onNavigateToListaPresione
                         Toast.makeText(context, "Completa todos los campos obligatorios", Toast.LENGTH_SHORT).show()
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
             ) {
                 Text("Registrar")
             }
@@ -261,7 +263,11 @@ fun HomePacienteScreen(onClickLogout: () -> Unit = {}, onNavigateToListaPresione
 
             Button(
                 onClick = onNavigateToListaPresiones,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
             ) {
                 Text("Ver mis registros")
             }

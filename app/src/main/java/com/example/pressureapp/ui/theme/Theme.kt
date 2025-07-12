@@ -9,18 +9,18 @@ private val LightColorScheme = lightColorScheme(
     primary = Color.Black,
     onPrimary = Color.White,
     background = Color.White,
-    onBackground = Color.Black,
-    surface = Color.White,
-    onSurface = Color.Black
+    onBackground = Color(0xFF378D4E),
+    surface = Color(0xFF148231),
+    secondary = Color(0xFF002C0C)
 )
 
 private val DarkColorScheme = darkColorScheme(
     primary = Color.Black,
     onPrimary = Color.White,
-    background = Color.Black,
-    onBackground = Color.White,
-    surface = Color.Black,
-    onSurface = Color.White
+    background = Color.White,
+    onBackground = Color(0xFF005817),
+    surface = Color(0xFF148231),
+    secondary = Color(0xFF009026)
 )
 
 @Composable
