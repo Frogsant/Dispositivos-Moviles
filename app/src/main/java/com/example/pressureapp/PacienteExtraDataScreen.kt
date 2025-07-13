@@ -1,9 +1,12 @@
 package com.example.pressureapp
 
 import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.material3.Button
@@ -32,70 +35,69 @@ fun PacienteExtraDataScreen(userId: String, onRegisterComplete: () -> Unit)
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        TextField(
-            value = edad,
-            onValueChange = { edad = it },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Edad") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, autoCorrect = false),
-            singleLine = true,
-            maxLines = 1,
-            textStyle = TextStyle(color = MaterialTheme.colorScheme.onPrimary),
-            colors = TextFieldDefaults.colors(
-                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedIndicatorColor = Color.Gray,
-                cursorColor = MaterialTheme.colorScheme.onPrimary,
-                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedTextColor = MaterialTheme.colorScheme.onPrimary
-            ),
-        )
+    ){
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.LightGray, shape = RoundedCornerShape(12.dp))
+                .border(width = 1.dp, Color.LightGray, shape = RoundedCornerShape(12.dp))
+                .padding(12.dp)
+        ){
+            TextField(
+                value = edad,
+                onValueChange = { edad = it },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text("Edad") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, autoCorrect = false),
+                singleLine = true,
+                maxLines = 1,
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.primary),
+                colors = TextFieldDefaults.colors(
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
+                    cursorColor = MaterialTheme.colorScheme.primary,
+                ),
+            )
 
-        Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
-        TextField(
-            value = altura,
-            onValueChange = { altura = it },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Altura (cm)") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, autoCorrect = false),
-            singleLine = true,
-            maxLines = 1,
-            textStyle = TextStyle(color = MaterialTheme.colorScheme.onPrimary),
-            colors = TextFieldDefaults.colors(
-                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedIndicatorColor = Color.Gray,
-                cursorColor = MaterialTheme.colorScheme.onPrimary,
-                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedTextColor = MaterialTheme.colorScheme.onPrimary
-            ),
-        )
+            TextField(
+                value = altura,
+                onValueChange = { altura = it },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text("Altura (cm)") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, autoCorrect = false),
+                singleLine = true,
+                maxLines = 1,
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.primary),
+                colors = TextFieldDefaults.colors(
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
+                    cursorColor = MaterialTheme.colorScheme.primary,
+                ),
+            )
 
-        Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
-        TextField(
-            value = peso,
-            onValueChange = { peso = it },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Peso (kg)") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, autoCorrect = false),
-            singleLine = true,
-            maxLines = 1,
-            textStyle = TextStyle(color = MaterialTheme.colorScheme.onPrimary),
-            colors = TextFieldDefaults.colors(
-                focusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedIndicatorColor = Color.Gray,
-                cursorColor = MaterialTheme.colorScheme.onPrimary,
-                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedTextColor = MaterialTheme.colorScheme.onPrimary
-            ),
-        )
+            TextField(
+                value = peso,
+                onValueChange = { peso = it },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text("Peso (kg)") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, autoCorrect = false),
+                singleLine = true,
+                maxLines = 1,
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.primary),
+                colors = TextFieldDefaults.colors(
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary,
+                    cursorColor = MaterialTheme.colorScheme.primary,
+                ),
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -115,7 +117,13 @@ fun PacienteExtraDataScreen(userId: String, onRegisterComplete: () -> Unit)
                 }.addOnFailureListener {
                     Toast.makeText(context, "Error al guardar: ${it.message}", Toast.LENGTH_SHORT).show()
                 }
-        }) {
+        },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
+        ) {
             Text("Finalizar registro")
         }
     }

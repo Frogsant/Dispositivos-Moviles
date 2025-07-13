@@ -90,7 +90,7 @@ fun RegisterScreen(navController: NavController, onNavigateBack: () -> Unit)
                 ),
                 supportingText = {
                     if (emailError.isNotEmpty()){
-                        Text(text = emailError, color = Color.White, fontWeight = FontWeight.Bold)
+                        Text(text = emailError, color = Color.Red, fontWeight = FontWeight.Bold)
                     }
                 }
             )
@@ -114,7 +114,7 @@ fun RegisterScreen(navController: NavController, onNavigateBack: () -> Unit)
                 ),
                 supportingText = {
                     if (usernameError.isNotEmpty()){
-                        Text(text = usernameError, color = Color.White, fontWeight = FontWeight.Bold)
+                        Text(text = usernameError, color = Color.Red, fontWeight = FontWeight.Bold)
                     }
                 }
             )
@@ -139,7 +139,7 @@ fun RegisterScreen(navController: NavController, onNavigateBack: () -> Unit)
                 ),
                 supportingText = {
                     if (passwordError.isNotEmpty()){
-                        Text(text = passwordError, color = Color.White, fontWeight = FontWeight.Bold)
+                        Text(text = passwordError, color = Color.Red, fontWeight = FontWeight.Bold)
                     }
                 }
             )
@@ -164,7 +164,7 @@ fun RegisterScreen(navController: NavController, onNavigateBack: () -> Unit)
                 ),
                 supportingText = {
                     if (confirmPasswordError.isNotEmpty()){
-                        Text(text = confirmPasswordError, color = Color.White, fontWeight = FontWeight.Bold)
+                        Text(text = confirmPasswordError, color = Color.Red, fontWeight = FontWeight.Bold)
                     }
                 }
             )
@@ -176,7 +176,7 @@ fun RegisterScreen(navController: NavController, onNavigateBack: () -> Unit)
                 onRoleSelected = { selectedRole = it },
                 supportingText = {
                     if (roleError.isNotEmpty()){
-                        Text(text = roleError, color = Color.White, fontWeight = FontWeight.Bold)
+                        Text(text = roleError, color = Color.Red, fontWeight = FontWeight.Bold)
                     }
                 }
             )

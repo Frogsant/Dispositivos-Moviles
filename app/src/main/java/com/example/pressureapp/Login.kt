@@ -83,7 +83,7 @@ fun LoginScreen(onLoginSuccess: (FirebaseUser, String) -> Unit, onNavigateToRegi
                 ),
                 supportingText = {
                     if (emailError.isNotEmpty()){
-                        Text(text = emailError, color = Color.White, fontWeight = FontWeight.Bold)
+                        Text(text = emailError, color = Color.Red, fontWeight = FontWeight.Bold)
                     }
                 }
             )
@@ -108,7 +108,7 @@ fun LoginScreen(onLoginSuccess: (FirebaseUser, String) -> Unit, onNavigateToRegi
                 ),
                 supportingText = {
                     if (passwordError.isNotEmpty()){
-                        Text(text = passwordError, color = Color.White, fontWeight = FontWeight.Bold)
+                        Text(text = passwordError, color = Color.Red, fontWeight = FontWeight.Bold)
                     }
                 }
             )
