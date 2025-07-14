@@ -3,7 +3,9 @@ package com.example.pressureapp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Comment
@@ -47,7 +49,10 @@ fun RegistroIndividualScreen(registroId: String, navController: NavController) {
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize())
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .verticalScroll(rememberScrollState())
+    )
     {
         Box(
             modifier = Modifier
